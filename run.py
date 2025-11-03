@@ -10,7 +10,7 @@ import deskew
 model = YOLOv10("source/docLayout.pt")
 
 # Define the input and output directories
-input_dir = "MOCK_DATA/documents/"
+input_dir = "FINAL_DATA/documents/"
 output_dir = "output_json/"
 
 # Create output directory if it doesn't exist
@@ -66,7 +66,7 @@ for image_file in os.listdir(input_dir):
             image_to_predict_path,
             imgsz=1024,
             conf=0.2,
-            device="cpu"
+            device="gpu"
         )
         # Extract bounding box coordinates and class information
         annotations = []
