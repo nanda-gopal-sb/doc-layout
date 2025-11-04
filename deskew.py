@@ -113,6 +113,7 @@ def get_skew_params(
 
 def deskew(
     original: CV_Img,
+    DEBUG: bool =False
 ) -> tuple[CV_Img, BBoxPropsList, Angle]:
     height: int = original.shape[0]
     width: int = original.shape[1]
@@ -121,14 +122,16 @@ def deskew(
     _, _, contour_bbox_area, angles = bbox_props
     deskewed = original.copy()
 
-    # TODO: way to optimimum angle
-
-    angle = get_mean_deviation(angles, contour_bbox_area)
-    print(f"rotating by {angle}")
-    m = cv2.getRotationMatrix2D((width / 2, height / 2), angle, 1)
-    deskewed = cv2.warpAffine(
-        deskewed, m, (width, height), borderValue=(255, 255, 255)
-    )
+    # TODO: way to find optimum angle
+    angle = get_mean_deviation(angles, contour_bbox_area, False)
+    if DEBUG: print(f"rotating by {angle}")
+    if (angle == 0):
+        deskewed = original
+    else:
+        m = cv2.getRotationMatrix2D((width / 2, height / 2), angle, 1)
+        deskewed = cv2.warpAffine(
+            deskewed, m, (width, height), borderValue=(255, 255, 255)
+        )
     return (
         deskewed,
         bbox_props,
@@ -178,11 +181,24 @@ def annotate_skews(
 
 
 def deskew_image(
+    src_img_path: str
+) -> CV_Img:
+    """deskews image
+    Args:
+        src_img_path (str): relative path of image
+    """
+    src_img = cv2.imread(src_img_path)
+    if src_img is None:
+        raise FileNotFoundError(f"{src_img_path} not found")
+
+    return deskew(src_img)[0]
+
+def deskew_and_write(
     src_img_path: str,
-    out_dir: str = "./out",
     save_annotated_img: bool = True,
-    write_threshold: float = 0,
-):
+    out_dir: str = "./out",
+    write_threshold: float = 0
+) -> CV_Img:
     """deskews image
 
     Args:
@@ -196,45 +212,20 @@ def deskew_image(
 
     src_img = cv2.imread(src_img_path)
     if src_img is None:
-        print(f"{src_img_path} not found")
-        return
+        raise FileNotFoundError(f"{src_img_path} not found")
 
     deskewed, bbox_props, angle = deskew(src_img)
-    if abs(angle) > write_threshold:
-    #     cv2.imwrite(out_path, deskewed)
-    #     if save_annotated_img:
-    #         annoted_img = annotate_skews(
-    #             src_img,
-    #             bbox_props,
-    #             angle,
-    #         )
-    #         (fn, ext) = os.path.splitext(img_name)
-    #         cv2.imwrite(
-    #             os.path.join(out_dir, fn + "_annot" + ext),
-    #             annoted_img,
-    #         )
-        return deskewed
-        
-    else:
-        print("threshold not met, skip writing")
-        return None
-
-
-# directory = "/home/nandagopal/Projects/aiGrantz/MOCK_DATA/documents/"
-# entries = os.listdir(directory)
-#
-# files = [
-#     entry
-#     for entry in entries
-#     if os.path.isfile(os.path.join(directory, entry))
-# ]
-#
-# for file in files:
-#     print(f"Processing: {file}")
-#     deskew_image(directory + file, "./out", True, 0)
-#     print("\n\n")
-#
-# # fails in these case:
-# doc_03818.png
-# doc_03163.png
-# deskew_image(directory + "doc_03163.png")
+    if angle > write_threshold:
+        cv2.imwrite(out_path, deskewed)
+        if save_annotated_img:
+            annoted_img = annotate_skews(
+                src_img,
+                bbox_props,
+                angle,
+            )
+            (fn, ext) = os.path.splitext(img_name)
+            cv2.imwrite(
+                os.path.join(out_dir, fn + "_annot" + ext),
+                annoted_img,
+            )
+    return deskewed
