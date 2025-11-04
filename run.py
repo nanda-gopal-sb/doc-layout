@@ -85,10 +85,11 @@ if __name__ == "__main__":
     start = time.perf_counter()
     for i, img_filename in enumerate(files):
         now = time.perf_counter() - start
+        eta = now/(i+1) * (count-i+1)
         print(
-f"""Elapsed     : {now:.3f}s
-time per img: {now/(i+1)*1000:.0f}ms
-ETA         : {now/(i+1) * count:.2f}s
+f"""Elapsed     : {(now-now%60)/60:2.0f}m:{(now%60):2.3f}s
+time per img: {now/(i+1)*1000:.0f} ms
+ETA         : {(eta - eta%60)/60:2.0f}m:{eta%60:2.0f}s
 
 processing image: {img_filename}  {i+1}/{count}""")
         img_path = os.path.join(INPUT_DIR, img_filename)
