@@ -1,5 +1,5 @@
 import os
-from deskew import deskew_image
+from deskew import deskew_and_write
 
 directory = "/home/nandagopal/Projects/aiGrantz/MOCK_DATA/documents/"
 entries = os.listdir(directory)
@@ -12,10 +12,10 @@ files = [
 
 for file in files:
     print(f"Processing: {file}")
-    deskew_image(directory + file, "./out", True, 0)
+    deskew_and_write(directory + file, True, "./out", 0)
     print("\n\n")
 
 # fails in these case:
 # doc_03818.png
 # doc_03163.png
-deskew_image(directory + "doc_03163.png")
+deskew_and_write(directory + "doc_03163.png")
