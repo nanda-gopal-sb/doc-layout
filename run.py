@@ -1,6 +1,5 @@
 import os
 import json
-import numpy as np
 import cv2
 from doclayout_yolo import YOLOv10
 # Import the new deskewing module
