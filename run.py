@@ -6,7 +6,7 @@ from doclayout_yolo import YOLOv10
 import deskew
 
 # Initialize the YOLO model
-model = YOLOv10("source/docLayout.pt")
+model = YOLOv10("models/docLayout.pt")
 
 # Define the input and output directories
 input_dir = "PS05_SHORTLIST_DATA/images/"
