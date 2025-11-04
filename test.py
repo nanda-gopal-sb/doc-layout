@@ -6,7 +6,7 @@ model = YOLOv10("docLayout.pt")
 
 # Perform prediction
 det_res = model.predict(
-    "output.png",   # Image to predict
+    "lmao.jpg",   # Image to predict
     imgsz=1024,        # Prediction image size
     conf=0.2,          # Confidence threshold
     device="cpu"    # Device to use (e.g., 'cuda:0' or 'cpu')

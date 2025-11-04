@@ -1,0 +1,19 @@
+ID: 0, Name: title
+ID: 1, Name: plain text
+ID: 2, Name: abandon
+ID: 3, Name: figure
+ID: 4, Name: figure_caption
+ID: 5, Name: table
+ID: 6, Name: table_caption
+ID: 7, Name: table_footnote
+ID: 8, Name: isolate_formula
+ID: 9, Name: formula_caption
+
+
+
+{0:"Background",
+ 1: "Text",
+ 2: "Title",
+ 3 : "List",
+ 4: "Table",
+ 5: "Figure""}

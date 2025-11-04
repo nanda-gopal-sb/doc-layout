@@ -105,7 +105,7 @@ def process_directories(image_dir, json_dir, output_dir):
 if __name__ == '__main__':
     # 1. SET YOUR DIRECTORY PATHS HERE
     #    - Replace '.' with the paths to your images and JSONs folders.
-    images_directory = './MOCK_DATA/documents/'
+    images_directory = '/home/nandagopal/Projects/aiGrantz/PS05_SHORTLIST_DATA/images/'
     json_directory = './output_json/'
 
     #    - Name the folder where you want to save the new images.
