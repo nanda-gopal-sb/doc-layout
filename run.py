@@ -1,23 +1,12 @@
 import os
 import json
-import cv2
+import sys
+import time
 from doclayout_yolo import YOLOv10
-# Import the new deskewing module
 import deskew
 
-# Initialize the YOLO model
-model = YOLOv10("models/docLayout.pt")
-
-# Define the input and output directories
-input_dir = "PS05_SHORTLIST_DATA/images/"
-output_dir = "output_json/"
-
-# Create output directory if it doesn't exist
-os.makedirs(output_dir, exist_ok=True)
-
-# Create a temporary directory for deskewed images
-temp_dir = "temp_deskewed_images/"
-os.makedirs(temp_dir, exist_ok=True)
+INPUT_DIR = "PS05_SHORTLIST_DATA/images"
+JSON_OUTPUT_DIR = "output_json/"
 
 category_mapping = {
     0: {"id": 2, "name": "Title"},
@@ -32,28 +21,21 @@ category_mapping = {
     9: {"id": 1, "name": "Text"}
 }
 
-for image_file in os.listdir(input_dir):
-    image_path = os.path.join(input_dir, image_file)
+def print_flush(x):
+    print(x)
+    sys.stdout.flush()
 
-    image_to_predict_path = image_path  # Default to original image
-
-    deskewed_image = deskew.deskew_image(image_path, "./out", False, 0)
-    if deskewed_image is not None:
-        deskewed_image_path = os.path.join(temp_dir, image_file)
-        cv2.imwrite(deskewed_image_path, deskewed_image)
-        image_to_predict_path = deskewed_image_path
-        print(f"Skew detected for {image_file}. Using deskewed image.")
-    else:
-        print(f"No significant skew detected for {image_file}. Using original image.")
+def process(img_filename, img_path, model, json_dir):
+    deskewed_image = deskew.deskew_image(img_path)
     det_res = model.predict(
-        image_to_predict_path,
+        deskewed_image,
         imgsz=1024,
         conf=0.2,
-        device="cpu"
+        device="cpu",
+        verbose=False
     )
     annotations = []
     results = det_res[0]
-    print("LMAOOO WE REACHER HEREEEE))))))((((()))))")
     for box in results.boxes:
         original_category_id = int(box.cls[0])
 
@@ -77,21 +59,39 @@ for image_file in os.listdir(input_dir):
             "category_id": new_category_id,
             "category_name": new_category_name
         })
-
-    json_data = {
-        "file_name": image_file,
+    save_json_file({
+        "file_name": img_filename,
         "annotations": annotations
-    }
+    }, json_dir)
 
-    output_json_path = os.path.join(output_dir, f"{os.path.splitext(image_file)[0]}.json")
 
+def save_json_file(data, out_path):
+    fn = os.path.splitext(data["file_name"])[0]
+    output_json_path = os.path.join(out_path, fn + ".json")
+    # print("saving file: "+ fn + ".json")
+    
     with open(output_json_path, 'w') as f:
-        json.dump(json_data, f, indent=2)
+        json.dump(data, f, indent=2)
 
-    print(f"Bounding box coordinates and new categories saved to {output_json_path}\n")
 
-# if os.path.exists(temp_dir):
-#     for file in os.listdir(temp_dir):
-#         os.remove(os.path.join(temp_dir, file))
-#     os.rmdir(temp_dir)
-#     print("Temporary deskewed images and directory removed.")
+if __name__ == "__main__":
+    # Initialize the YOLO model
+    model = YOLOv10("models/docLayout.pt")
+    print_flush("getting files\n")
+    files = os.listdir(INPUT_DIR)
+    count = len(files)
+    # Create output directory if it doesn't exist
+    os.makedirs(JSON_OUTPUT_DIR, exist_ok=True)
+    start = time.perf_counter()
+    for i, img_filename in enumerate(files):
+        now = time.perf_counter() - start
+        print(
+f"""Elapsed     : {now:.3f}s
+time per img: {now/(i+1)*1000:.0f}ms
+ETA         : {now/(i+1) * count:.2f}s
+
+processing image: {img_filename}  {i+1}/{count}""")
+        img_path = os.path.join(INPUT_DIR, img_filename)
+        process(img_filename, img_path, model, JSON_OUTPUT_DIR)
+        sys.stdout.write("\033[5A")  # move cursor up 5 lines
+        sys.stdout.write("\033[J")   # clear from cursor to end of screen
