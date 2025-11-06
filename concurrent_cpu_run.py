@@ -1,7 +1,7 @@
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from doclayout_yolo import YOLOv10
-from run import process, print_flush
+from inference import process, print_flush
 
 IMG_DIR = "PS05_SHORTLIST_DATA/images"
 JSON_OUTPUT_DIR = "output_json/"

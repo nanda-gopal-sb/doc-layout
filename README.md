@@ -1,34 +1,28 @@
-## Steps to Get the script running
+# Document Layout Analysis
 
+A compact document-layout analysis program designed to detect and normalize visual structure in scanned or photographed documents. It targets noisy real-world inputs (blurred, deskewed, low-resolution) and supports many languages.
 
-1. Open Command Promnt : 
-    `nvidia-smi` , note the GPU Name and CUDA Version and Driver Version
-2. Goto https://www.nvidia.com/en-us/drivers/ and input the details given above. Install the latest driver.
-3. Restart the system
-4. run `nvcc --version`, if showing something then ok if not :<br>
-    a. goto https://developer.nvidia.com/cuda-12-1-0-download-archive
-    b. Fill out the details 
-    c. Select .exe(Local)
-    d. Install it, and run `nvcc --version` again.
-5. Install Python if not already installed
-6. Open terminal and type :
-    `python -m venv venv`<br>
-    `.\venv\Scripts\activate`
-7. `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121`
-8. `pip install numpy opencv-python-headless scikit-learn ultralytics`
-9. C:\doc_processor\
-│
-├── MOCK_DATA\
-│   └── documents\
-│       ├── your_image_1.png
-│       └── your_image_2.jpg
-│
-├── source\
-│   └── docLayout.pt
-│
-├── run.py              <-- (Your main script, MODIFIED for "cuda")
-├── deskew.py           <-- (Your deskew helper script)
-└── doclayout_yolo.py   <-- [!] This file must exist here
-Make sure the layout is like this
+## Features
+- Detects page elements (text blocks, tables, figures, headings) using a YOLO model trained on the DocLayNet dataset.
+- Robust to blurred, deskewed, and low-resolution inputs.
+- Multi-language support for downstream OCR and analysis.
+- Input preprocessing with OpenCV: Hough transforms and common rotation/deskew operations to normalize orientation.
+- Produces structured layout outputs (bounding boxes + labels) and enhanced images for OCR.
 
-10. python run.py
+## Implementation (brief)
+- Detection model: YOLO trained on DocLayNet — capable of identifying most document element types.
+- Preprocessing: edge/Hough-based line detection and rotation correction; basic denoising and resizing for improving detection/OCR quality.
+- Typical outputs: annotated image, normalized crops per element, layout JSON for downstream processing.
+
+## Next steps
+- Integrate a dedicated OCR model to extract text from identified regions.
+- Add an image- and text-level summarization pipeline to summarize content found across detected elements.
+- Implement a reconstruction step to produce a cleaner, higher-resolution version of hard-to-identify documents (super-resolution + layout-aware compositing).
+
+## Goal
+Reconstruct hard-to-identify documents into cleaner, higher-resolution versions while producing a structured layout and text output suitable for search, archival, and downstream NLP/summarization.
+
+## Minimal dependencies
+- OpenCV (preprocessing)
+- PyTorch/TensorFlow + YOLO implementation and weights (DocLayNet-trained)
+- Optional: OCR engine (Tesseract / OCR model), super-resolution model
