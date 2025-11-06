@@ -65,5 +65,5 @@ def deskew(path):
 
 #
 if __name__ == "__main__":
-    deskewed = deskew("/home/nandagopal/Projects/aiGrantz/MOCK_DATA/documents/doc_04971.png")
+    deskewed = deskew("") # path to input image
     cv2.imwrite("opencv.jpg",deskewed)

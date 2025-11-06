@@ -1,5 +1,5 @@
 import os
-from deskew import deskew_and_write
+from deskew_clustering import deskew_and_write
 
 directory = "/home/nandagopal/Projects/aiGrantz/MOCK_DATA/documents/"
 entries = os.listdir(directory)

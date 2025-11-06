@@ -3,9 +3,9 @@ import json
 import sys
 import time
 from doclayout_yolo import YOLOv10
-import deskew
+import deskew_clustering
 
-INPUT_DIR = "PS05_SHORTLIST_DATA/images"
+INPUT_DIR = "" # specify your input image directory here
 JSON_OUTPUT_DIR = "output_json/"
 
 category_mapping = {
@@ -26,7 +26,7 @@ def print_flush(x):
     sys.stdout.flush()
 
 def process(img_filename, img_path, model, json_dir):
-    deskewed_image = deskew.deskew_image(img_path)
+    deskewed_image = deskew_clustering.deskew_image(img_path)
     det_res = model.predict(
         deskewed_image,
         imgsz=1024,

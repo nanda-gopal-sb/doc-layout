@@ -1,3 +1,5 @@
+
+// Classnames of YOLO-DOCKLAYNET Model
 ID: 0, Name: title
 ID: 1, Name: plain text
 ID: 2, Name: abandon
@@ -10,7 +12,7 @@ ID: 8, Name: isolate_formula
 ID: 9, Name: formula_caption
 
 
-
+// Our expected result
 {0:"Background",
  1: "Text",
  2: "Title",
