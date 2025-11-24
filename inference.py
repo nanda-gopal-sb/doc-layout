@@ -4,8 +4,9 @@ import sys
 import time
 from doclayout_yolo import YOLOv10
 import deskew_clustering
+import argparse
 
-INPUT_DIR = "" # specify your input image directory here
+INPUT_DIR = ""
 JSON_OUTPUT_DIR = "output_json/"
 
 category_mapping = {
@@ -75,13 +76,23 @@ def save_json_file(data, out_path):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run YOLO model inference.")
+    
+    # We set default paths that we will use *inside* the container
+    parser.add_argument("--input", type=str, default="/data/input",
+                        help="Directory for input images.")
+    parser.add_argument("--output", type=str, default="/data/output",
+                        help="Directory for inference results.")
+    
+    args = parser.parse_args()
+    
     # Initialize the YOLO model
     model = YOLOv10("models/docLayout.pt")
     print_flush("getting files\n")
-    files = os.listdir(INPUT_DIR)
+    files = os.listdir(args.input)
     count = len(files)
     # Create output directory if it doesn't exist
-    os.makedirs(JSON_OUTPUT_DIR, exist_ok=True)
+    os.makedirs(args.output, exist_ok=True)
     start = time.perf_counter()
     for i, img_filename in enumerate(files):
         now = time.perf_counter() - start

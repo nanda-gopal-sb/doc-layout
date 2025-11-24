@@ -1,0 +1,19 @@
+# .dockerignore
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local data (Do NOT copy your dataset into the image)
+input_images/
+results/
+*.mp4
+*.jpg
+
+# Virtual environment
+.venv/
+venv/
+
+# Git files
+.git/
+.gitignore

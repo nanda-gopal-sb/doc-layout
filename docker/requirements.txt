@@ -1,0 +1,9 @@
+doclayout_yolo
+huggingface_hub
+ultralytics
+opencv-python-headless
+Pillow
+numpy
+scipy
+scikit-image
+scikit-learn
