@@ -110,5 +110,17 @@ ETA         : {(eta - eta%60)/60:2.0f}m:{eta%60:2.0f}s
 processing image: {img_filename}  {i+1}/{count}""")
         img_path = os.path.join(args.input, img_filename)
         process(img_filename, img_path, model, args.output)
-        sys.stdout.write("\033[5A") 
-        sys.stdout.write("\033[J")   
+        if torch.cuda.is_available():
+            idx = torch.cuda.current_device()
+            allocated = torch.cuda.memory_allocated(idx)
+            reserved = torch.cuda.memory_reserved(idx)
+            props = torch.cuda.get_device_properties(idx)
+            total = props.total_memory
+            used_pct = allocated / total * 100 if total else 0.0
+            print_flush(
+                f"GPU VRAM usage - allocated: {allocated/1024**2:.2f} MB, "
+                f"reserved/cache: {reserved/1024**2:.2f} MB, "
+                f"total: {total/1024**2:.2f} MB ({used_pct:.2f}%)"
+            )
+        else:
+            print_flush("CUDA not available - running on CPU")
