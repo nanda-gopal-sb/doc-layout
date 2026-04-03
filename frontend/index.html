@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Layout AI</title>
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+    <div id="app">
+        <h1>📄 Document Layout Analysis</h1>
+        <p>Upload a skewed document to deskew and detect elements.</p>
+        
+        <div class="upload-section">
+            <input type="file" id="fileInput" accept="image/*">
+            <button id="analyzeBtn">Analyze Document</button>
+        </div>
+
+        <div id="status"></div>
+
+        <div class="results-container" id="results" style="display: none;">
+            <div class="image-card">
+                <h3>Annotated Result</h3>
+                <img id="resultImage" src="" alt="Result">
+            </div>
+            <div class="data-card">
+                <h3>Detections (JSON)</h3>
+                <pre id="jsonOutput"></pre>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
